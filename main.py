@@ -56,26 +56,21 @@ def generate():
 
     try:
 
-        # إنشاء ملف Excel
-        output, employees = splitter.split(file)
+        # إنشاء التقرير
+        report = splitter.split(file)
 
-        report_data = {
-            "title": "Attendance Report",
-            "date_range": ""
-        }
-
-        # إنشاء أول PDF تجريبي
-        pdf.generate(report_data)
+        # إنشاء الـ PDF
+        pdf.generate(report)
 
         messagebox.showinfo(
             "Finished",
             f"""Done Successfully
 
-Employees : {employees}
+Employees : {len(report.employees)}
 
 Excel Saved To :
 
-{output}
+{report.excel_path}
 
 PDF Saved To :
 

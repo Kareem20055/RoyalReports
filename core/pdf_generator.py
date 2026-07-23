@@ -22,11 +22,11 @@ class PDFGenerator:
     # Report Information
     # ==============================
 
-    def draw_report_info(self, report_title, date_range):
+    def draw_report_info(self, report):
 
         return {
-            "title": report_title,
-            "date_range": date_range
+            "title": report.title,
+            "date_range": report.date_range
         }
 
     # ==============================
@@ -43,7 +43,7 @@ class PDFGenerator:
 
     def draw_table(self, employee):
 
-        return employee.get("rows", [])
+        return employee.rows
 
     # ==============================
     # Footer
@@ -57,7 +57,7 @@ class PDFGenerator:
     # Generate PDF
     # ==============================
 
-    def generate(self, report_data):
+    def generate(self, report):
 
         output_folder = self.settings.get(
             "output_folder",
@@ -100,16 +100,7 @@ class PDFGenerator:
 
         # ---------------- Report Info ----------------
 
-        report = self.draw_report_info(
-            report_data.get(
-                "title",
-                "Attendance Report"
-            ),
-            report_data.get(
-                "date_range",
-                ""
-            )
-        )
+        info = self.draw_report_info(report)
 
         c.setFont(
             "Helvetica",
@@ -119,13 +110,13 @@ class PDFGenerator:
         c.drawCentredString(
             width / 2,
             height - 75,
-            report["title"]
+            info["title"]
         )
 
         c.drawCentredString(
             width / 2,
             height - 95,
-            report["date_range"]
+            info["date_range"]
         )
 
         # ---------------- Temporary Message ----------------
@@ -139,6 +130,13 @@ class PDFGenerator:
             50,
             height - 140,
             "Royal Reports PDF Engine Ready..."
+        )
+
+        # عدد الموظفين (للتأكد أن البيانات وصلت)
+        c.drawString(
+            50,
+            height - 160,
+            f"Employees: {len(report.employees)}"
         )
 
         c.save()

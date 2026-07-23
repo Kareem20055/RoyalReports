@@ -1,4 +1,6 @@
 from openpyxl import load_workbook, Workbook
+from models.employee import Employee
+from models.report import Report
 import os
 
 
@@ -41,6 +43,7 @@ class ReportSplitter:
         output.remove(output.active)
 
         employees = {}
+        report = Report()
 
         for row in ws.iter_rows(min_row=data_row):
 
@@ -62,16 +65,28 @@ class ReportSplitter:
                     for c in range(1, ws.max_column + 1):
                         sheet.cell(r, c).value = ws.cell(r, c).value
 
+                emp = Employee(name=employee)
+
                 employees[employee] = {
                     "sheet": sheet,
-                    "row": header_row + 1
+                    "row": header_row + 1,
+                    "employee": emp
                 }
+
+                report.employees.append(emp)
 
             sheet = employees[employee]["sheet"]
             current = employees[employee]["row"]
 
             for c in range(1, ws.max_column + 1):
                 sheet.cell(current, c).value = ws.cell(row[0].row, c).value
+
+            row_values = [
+                ws.cell(row[0].row, c).value
+                for c in range(1, ws.max_column + 1)
+            ]
+
+            employees[employee]["employee"].rows.append(row_values)
 
             employees[employee]["row"] += 1
 
@@ -82,4 +97,6 @@ class ReportSplitter:
 
         output.save(output_path)
 
-        return output_path, len(employees)
+        report.excel_path = output_path
+
+        return report
