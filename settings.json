@@ -1,5 +1,8 @@
 {
-    "language": "en",
     "company": "Royal Glass",
-    "output_folder": "output"
+    "language": "en",
+    "late_grace_minutes": 30,
+    "absence_after_minutes": 360,
+    "calculate_from_absence_time_if_checkout_only": true,
+    "pdf_font_size": 10
 }

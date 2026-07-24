@@ -7,7 +7,7 @@ class Report:
 
     company: str = ""
 
-    title: str = "Attendance Report"
+    title: str = "attendance_report"
 
     date_range: str = ""
 

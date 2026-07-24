@@ -1,18 +1,26 @@
+from pathlib import Path
+import traceback
 import customtkinter as ctk
 from tkinter import filedialog, messagebox
-
-from core.splitter import ReportSplitter
-from core.pdf_generator import PDFGenerator
-from core.settings_manager import SettingsManager
+from i18n import t
+from core.report.splitter import ReportSplitter
+from core.report.report_builder import ReportBuilder
+from core.pdf.report_generator import ReportGenerator
+from core.settings.loader import load_settings, save_settings
+from design.fonts import register_fonts
 
 
 ctk.set_appearance_mode("light")
 ctk.set_default_color_theme("blue")
 
-settings = SettingsManager.load()
+register_fonts()
+
+settings = load_settings()
+save_settings(settings)
 
 splitter = ReportSplitter()
-pdf = PDFGenerator(settings)
+builder = ReportBuilder(settings)
+
 
 app = ctk.CTk()
 
@@ -29,7 +37,7 @@ def browse():
 
     file = filedialog.askopenfilename(
         title="Select iVMS Report",
-        filetypes=[("Excel Files", "*.xlsx")]
+        filetypes=[("Excel Files", "*.xlsx")],
     )
 
     if file:
@@ -45,45 +53,66 @@ def generate():
 
     file = entry.get().strip()
 
-    if file == "":
+    if not file:
 
         messagebox.showerror(
             "Error",
-            "Please choose an Excel report first."
+            "Please choose an Excel report first.",
         )
 
         return
 
     try:
 
-        # إنشاء التقرير
         report = splitter.split(file)
 
-        # إنشاء الـ PDF
-        pdf.generate(report)
+        output_dir = Path("output")
+        output_dir.mkdir(
+            exist_ok=True,
+        )
+
+        pdf_count = 0
+
+        for employee in report.employees:
+
+            pdf_report = builder.build(
+                employee=employee,
+                company=report.company,
+                title=t(report.title),
+                date_range=report.date_range,
+            )
+
+            pdf_path = output_dir / f"{employee.name}.pdf"
+
+            generator = ReportGenerator(
+                pdf_report,
+                settings,
+            )
+
+            generator.generate(
+                str(pdf_path),
+            )
+
+            pdf_count += 1
 
         messagebox.showinfo(
             "Finished",
             f"""Done Successfully
 
-Employees : {len(report.employees)}
+Employees : {pdf_count}
 
-Excel Saved To :
+PDFs Saved To :
 
-{report.excel_path}
-
-PDF Saved To :
-
-output/Royal_Report.pdf
-"""
+{output_dir.resolve()}
+""",
         )
 
-    except Exception as e:
+    except Exception:
+        
+        traceback.print_exc()
 
-        messagebox.showerror(
-            "Error",
-            str(e)
-        )
+        raise
+
 
 
 # ==============================
@@ -93,14 +122,14 @@ output/Royal_Report.pdf
 title = ctk.CTkLabel(
     app,
     text="Royal Reports",
-    font=("Arial", 26, "bold")
+    font=("Arial", 26, "bold"),
 )
 
 title.pack(pady=20)
 
 entry = ctk.CTkEntry(
     app,
-    width=520
+    width=520,
 )
 
 entry.pack()
@@ -109,7 +138,7 @@ browse_btn = ctk.CTkButton(
     app,
     text="Browse",
     width=150,
-    command=browse
+    command=browse,
 )
 
 browse_btn.pack(pady=10)
@@ -118,7 +147,7 @@ generate_btn = ctk.CTkButton(
     app,
     text="Generate",
     width=150,
-    command=generate
+    command=generate,
 )
 
 generate_btn.pack()

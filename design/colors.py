@@ -1,9 +1,7 @@
-PRIMARY = "#1E88E5"
+from reportlab.lib.colors import HexColor
 
-TEXT = "#222222"
+BLACK = HexColor("#000000")
+GRAY = HexColor("#666666")
+LIGHT_GRAY = HexColor("#DDDDDD")
 
-LIGHT_TEXT = "#666666"
-
-BORDER = "#D8D8D8"
-
-BACKGROUND = "#FFFFFF"
+TABLE_HEADER_BG = HexColor("#F3F3F3")
