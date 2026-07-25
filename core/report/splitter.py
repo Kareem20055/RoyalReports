@@ -2,6 +2,7 @@ from openpyxl import load_workbook, Workbook
 from models.employee import Employee
 from models.report import Report
 from models.attendance_row import AttendanceRow
+from core.report.date_formatter import format_date_range
 
 import os
 
@@ -55,6 +56,10 @@ class ReportSplitter:
 
         employees = {}
         report = Report()
+
+        report.date_range = format_date_range(
+            str(ws["A4"].value or "")
+        )
 
         for row in ws.iter_rows(min_row=data_row):
 

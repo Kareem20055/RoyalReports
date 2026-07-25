@@ -54,10 +54,21 @@ def calculate_worked_minutes(
             0,
         )
 
+    # حساب ساعات العمل داخل حدود الشيفت فقط
+
+    work_start = attendance.check_in
+    work_end = attendance.check_out
+
+    if attendance.shift_start is not None and work_start < attendance.shift_start:
+        work_start = attendance.shift_start
+
+    if attendance.shift_end is not None and work_end > attendance.shift_end:
+        work_end = attendance.shift_end
+
     return max(
         minutes_between(
-            attendance.check_in,
-            attendance.check_out,
+            work_start,
+            work_end,
         ),
         0,
     )

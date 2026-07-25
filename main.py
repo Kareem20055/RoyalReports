@@ -7,6 +7,9 @@ from core.report.report_builder import ReportBuilder
 from core.pdf.report_generator import ReportGenerator
 from core.settings.loader import load_settings, save_settings
 from design.fonts import register_fonts
+from core.report.weekly_summary_builder import WeeklySummaryBuilder
+from core.pdf.weekly_summary_generator import WeeklySummaryGenerator
+from core.report.date_range import build_folder_name
 
 
 ctk.set_appearance_mode("light")
@@ -19,6 +22,7 @@ save_settings(settings)
 
 splitter = ReportSplitter()
 builder = ReportBuilder(settings)
+weekly_builder = WeeklySummaryBuilder(settings)
 
 
 app = ctk.CTk()
@@ -65,10 +69,20 @@ def generate():
 
         report = splitter.split(file)
 
-        output_dir = Path("output")
-        output_dir.mkdir(
-            exist_ok=True,
-        )
+        base_output = Path("output")
+        base_output.mkdir(exist_ok=True)
+
+        folder_name = report.date_range
+
+        # إزالة أي حروف غير صالحة في أسماء المجلدات على ويندوز
+        for ch in '<>:"/\\|?*':
+            folder_name = folder_name.replace(ch, "-")
+
+        if not folder_name:
+            folder_name = "Unknown Period"
+
+        output_dir = base_output / folder_name
+        output_dir.mkdir(exist_ok=True)
 
         pdf_count = 0
 
@@ -93,6 +107,24 @@ def generate():
             )
 
             pdf_count += 1
+
+            weekly_report = weekly_builder.build(
+                employees=report.employees,
+                company=report.company,
+                title="التقرير الأسبوعي",
+                date_range=report.date_range,
+            )
+
+            weekly_pdf_path = output_dir / "التقرير الأسبوعي.pdf"
+
+            weekly_generator = WeeklySummaryGenerator(
+                weekly_report,
+                settings,
+            )
+
+            weekly_generator.generate(
+                str(weekly_pdf_path),
+            )
 
         messagebox.showinfo(
             "Finished",
