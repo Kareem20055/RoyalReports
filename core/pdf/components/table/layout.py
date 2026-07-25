@@ -23,4 +23,4 @@ def build_columns(
     )
 
     # نرجع الأعمدة فقط كما كان التصميم الأصلي
-    return layout.columns
+    return layout

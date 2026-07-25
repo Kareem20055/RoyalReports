@@ -3,12 +3,12 @@ from core.pdf.formatter import format_shift
 
 from core.pdf.components import (
     section,
-    table,
+    info,
 )
 
 from design.layout import (
+    PAGE_MARGIN,
     SECTION_SPACING,
-    TABLE_ROW_HEIGHT,
 )
 
 from i18n import t
@@ -43,12 +43,12 @@ def draw(
         (t("shift"), shift),
     ]
 
-    current_y = table.draw_key_value_table(
+    current_y = info.draw_info_list(
         canvas=canvas,
         rows=rows,
-        y=current_y,
+        current_y=current_y,
         page_width=width,
-        row_height=TABLE_ROW_HEIGHT,
+        margin=PAGE_MARGIN,
     )
 
     current_y -= SECTION_SPACING

@@ -1,0 +1,32 @@
+from reportlab.lib import colors
+
+from design.colors import (
+    BLACK,
+    LIGHT_GRAY,
+)
+
+from design.layout import TABLE_ROW_HEIGHT
+
+# Typography
+INFO_LABEL_BOLD = True
+INFO_VALUE_BOLD = False
+
+# Layout
+INFO_ROW_HEIGHT = TABLE_ROW_HEIGHT
+INFO_ROW_SPACING = 0
+
+LABEL_PADDING = 10
+VALUE_PADDING = 10
+
+# Divider
+INFO_DIVIDER = True
+INFO_DIVIDER_WIDTH = 0.5
+INFO_DIVIDER_COLOR = LIGHT_GRAY
+
+# Title spacing
+INFO_TOP_MARGIN = 6
+INFO_BOTTOM_MARGIN = 10
+
+# Colors
+INFO_LABEL_COLOR = BLACK
+INFO_VALUE_COLOR = BLACK

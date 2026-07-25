@@ -9,6 +9,7 @@ def draw_header(
     y,
     background,
     text_color,
+    margin,
 ):
     """
     Draw the table header.
@@ -28,6 +29,7 @@ def draw_header(
         header=True,
         background=background,
         text_color=text_color,
+        margin=margin,
     )
 
     return y - header["height"]

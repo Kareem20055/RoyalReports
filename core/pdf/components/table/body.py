@@ -7,6 +7,7 @@ def draw_rows(
     rows,
     columns,
     y,
+    margin,
 ):
     """
     Draw all table rows.
@@ -25,6 +26,7 @@ def draw_rows(
             values=row["values"],
             y=y,
             height=row["height"],
+            margin=margin,
         )
 
         y -= row["height"]

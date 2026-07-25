@@ -20,6 +20,7 @@ def draw_data_table(
     header_background=None,
     header_text_color=BLACK,
     normalize=True,
+    show_header=True,
 ):
     """
     Draw a complete data table.
@@ -33,7 +34,7 @@ def draw_data_table(
             max_column_widths=max_column_widths,
         )
 
-    columns = build_columns(
+    layout = build_columns(
         headers=headers,
         rows=rows,
         page_width=page_width,
@@ -41,21 +42,26 @@ def draw_data_table(
         weights=weights,
         max_column_widths=max_column_widths,
     )
+    columns = layout.columns
+    margin = layout.margin
 
-    current_y = draw_header(
-        canvas=canvas,
-        headers=headers,
-        columns=columns,
-        y=current_y,
-        background=header_background,
-        text_color=header_text_color,
-    )
+    if show_header:
+        current_y = draw_header(
+            canvas=canvas,
+            headers=headers,
+            columns=columns,
+            y=current_y,
+            background=header_background,
+            text_color=header_text_color,
+            margin=margin,
+        )
 
     current_y = draw_rows(
         canvas=canvas,
         rows=rows,
         columns=columns,
         y=current_y,
+        margin=margin,
     )
 
     return current_y
