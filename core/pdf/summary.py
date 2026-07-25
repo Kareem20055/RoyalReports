@@ -1,5 +1,3 @@
-from i18n import t
-
 from core.pdf.components import (
     section,
     info,
@@ -27,23 +25,23 @@ def draw(
 
     current_y = section.draw(
         canvas=canvas,
-        title=t("summary"),
+        title="الملخص",
         current_y=current_y,
         width=width,
     )
 
     rows = [
-        (t("present_days"), summary.present),
-        (t("late_days"), summary.late),
-        (t("absent_days"), summary.absent),
+        ("أيام الحضور", summary.present),
+        ("أيام التأخير", summary.late),
+        ("أيام الغياب", summary.absent),
 
-        (t("worked_time"), format_minutes(summary.worked_minutes)),
-        (t("late_time"), format_minutes(summary.late_minutes)),
-        (t("early_leave_time"), format_minutes(summary.early_leave_minutes)),
-        (t("overtime_time"), format_minutes(summary.overtime_minutes)),
+        ("إجمالي ساعات العمل", format_minutes(summary.worked_minutes)),
+        ("إجمالي التأخير", format_minutes(summary.late_minutes)),
+        ("إجمالي الانصراف المبكر", format_minutes(summary.early_leave_minutes)),
+        ("إجمالي العمل الإضافي", format_minutes(summary.overtime_minutes)),
 
-        (t("average_check_in"), format_time(summary.average_check_in)),
-        (t("average_check_out"), format_time(summary.average_check_out)),
+        ("متوسط وقت الحضور", format_time(summary.average_check_in)),
+        ("متوسط وقت الانصراف", format_time(summary.average_check_out)),
     ]
 
     current_y = info.draw_info_list(

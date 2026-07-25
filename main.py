@@ -2,7 +2,6 @@ from pathlib import Path
 import traceback
 import customtkinter as ctk
 from tkinter import filedialog, messagebox
-from i18n import t
 from core.report.splitter import ReportSplitter
 from core.report.report_builder import ReportBuilder
 from core.pdf.report_generator import ReportGenerator
@@ -78,7 +77,7 @@ def generate():
             pdf_report = builder.build(
                 employee=employee,
                 company=report.company,
-                title=t(report.title),
+                title=report.title,
                 date_range=report.date_range,
             )
 

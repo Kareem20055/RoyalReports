@@ -11,7 +11,6 @@ from design.layout import (
     SECTION_SPACING,
 )
 
-from i18n import t
 
 
 def draw(
@@ -26,7 +25,7 @@ def draw(
 
     current_y = section.draw(
         canvas=canvas,
-        title=t("employee_information"),
+        title="بيانات الموظف",
         current_y=current_y,
         width=width,
     )
@@ -38,9 +37,9 @@ def draw(
         shift = "--"
 
     rows = [
-        (t("employee_name"), employee.name),
-        (t("employee_id"), employee.person_id),
-        (t("shift"), shift),
+        ("اسم الموظف", employee.name),
+        ("رقم الموظف", employee.person_id),
+        ("الشيفت", shift),
     ]
 
     current_y = info.draw_info_list(

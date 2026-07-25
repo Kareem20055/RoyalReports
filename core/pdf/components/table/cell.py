@@ -7,13 +7,15 @@ from design.text import (
     draw_multiline_text,
     text_height,
 )
-from core.pdf.layout_engine import LayoutEngine
 
+from core.pdf.layout_engine import LayoutEngine
 
 TIME_PATTERN = re.compile(
     r"^(AM|PM)\s+\d{1,2}:\d{2}$",
     re.IGNORECASE,
 )
+
+
 
 
 def draw_cell(
@@ -70,10 +72,10 @@ def draw_cell(
 
     if isinstance(text, str) and TIME_PATTERN.match(text.strip()):
         align = "center"
-        text_x = x + TABLE_CELL_PADDING + (available_width / 2)
+        text_position = x + TABLE_CELL_PADDING + (available_width / 2)
     else:
-        align = LayoutEngine.text_align()
-        text_x = LayoutEngine.text_x(
+        align = "right"
+        text_position = LayoutEngine.text_x(
             cell_x=x,
             cell_width=width,
             padding=TABLE_CELL_PADDING,
@@ -82,7 +84,7 @@ def draw_cell(
     draw_multiline_text(
         canvas=canvas,
         text=text,
-        x=text_x,
+        x=text_position,
         y=text_y,
         max_width=available_width,
         align=align,

@@ -15,21 +15,19 @@ from design.layout import (
     TABLE_ROW_HEIGHT,
 )
 
-from i18n import t
-
 from models.calculated_attendance import CalculatedAttendance
 
 
 HEADERS = [
-    t("date"),
-    t("weekday"),
-    t("check_in"),
-    t("check_out"),
-    t("worked"),
-    t("late"),
-    t("early_leave"),
-    t("overtime"),
-    t("status"),
+    "التاريخ",
+    "اليوم",
+    "الحضور",
+    "الانصراف",
+    "العمل",
+    "التأخير",
+    "الانصراف المبكر",
+    "الإضافي",
+    "الحالة",
 ]
 
 WEIGHTS = [
@@ -56,6 +54,13 @@ MAX_WIDTHS = [
     60,   # الحالة
 ]
 
+STATUSS = {
+    "present": "حاضر",
+    "absent": "غائب",
+    "late": "متأخر",
+    "holiday": "إجازة",
+}
+
 
 def draw(
     canvas,
@@ -65,7 +70,7 @@ def draw(
 ):
     current_y = section.draw(
         canvas=canvas,
-        title=t("attendance"),
+        title="الحضور",
         current_y=current_y,
         width=width,
     )
@@ -83,7 +88,10 @@ def draw(
             format_minutes(item.late_minutes),
             format_minutes(item.early_leave_minutes),
             format_minutes(item.overtime_minutes),
-            t(item.status.value.lower()),
+            STATUSS.get(
+                item.status.value.lower(),
+                item.status.value,
+            ),
         ])
 
     return table.draw_data_table(

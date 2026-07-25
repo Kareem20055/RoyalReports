@@ -52,9 +52,9 @@ def draw(
     draw_text(
         canvas=canvas,
         text=title,
-        x=LayoutEngine.page_start(width, PAGE_MARGIN),
+        x=width - PAGE_MARGIN,
         y=current_y,
-        align=LayoutEngine.text_align(),
+        align="right",
         bold=True,
         size=SUBTITLE_SIZE,
     )

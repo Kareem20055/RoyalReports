@@ -3,14 +3,11 @@ from dataclasses import dataclass
 from reportlab.pdfbase import pdfmetrics
 
 from design.fonts import (
-    ENGLISH_FONT,
     ARABIC_FONT,
     BODY_SIZE,
 )
 
 from design.layout import TABLE_CELL_PADDING
-
-from i18n import is_rtl
 
 
 @dataclass
@@ -25,42 +22,14 @@ class TableLayout:
 class LayoutEngine:
 
     @staticmethod
-    def rtl() -> bool:
-        return is_rtl()
-
-    @staticmethod
-    def text_align():
-        return "right" if is_rtl() else "left"
-
-    @staticmethod
     def text_x(cell_x, cell_width, padding):
-        if is_rtl():
-            return cell_x + cell_width - padding
+        return cell_x + cell_width - padding
 
-        return cell_x + padding
-
-    @staticmethod
-    def page_start(page_width, margin):
-        if is_rtl():
-            return page_width - margin
-
-        return margin
-
-    @staticmethod
-    def page_end(page_width, margin):
-        if is_rtl():
-            return margin
-
-        return page_width - margin
 
     @staticmethod
     def section_start(page_width, margin, columns):
         table_width = sum(width for _, width in columns)
-
-        if is_rtl():
-            return page_width - margin - table_width
-
-        return margin
+        return page_width - margin - table_width
 
     @staticmethod
     def available_width(page_width, margin):
@@ -91,6 +60,7 @@ class LayoutEngine:
             min(maximum, widest + padding),
         )
 
+        
     @staticmethod
     def key_value_layout(
         labels,
@@ -112,16 +82,10 @@ class LayoutEngine:
 
         value_width = table_width - label_width
 
-        if is_rtl():
-            columns = [
-                ("value", value_width),
-                ("label", label_width),
-            ]
-        else:
-            columns = [
-                ("label", label_width),
-                ("value", value_width),
-            ]
+        columns = [
+            ("value", value_width),
+            ("label", label_width),
+        ]
 
         return TableLayout(
             columns=columns,
@@ -145,10 +109,6 @@ class LayoutEngine:
         min_column_width=40,
         max_column_widths=None,
     ):
-        """
-        Create a responsive layout for data tables.
-        """
-
         if weights is None:
             weights = [1] * len(headers)
 
@@ -172,7 +132,7 @@ class LayoutEngine:
 
         minimum_widths = []
 
-        for column_index, header in enumerate(headers):
+        for column_index in range(len(headers)):
 
             texts = []
 
@@ -180,7 +140,6 @@ class LayoutEngine:
                 if column_index < len(row):
                     texts.append(row[column_index])
 
-            # لو العمود كله فاضي
             if not texts:
                 texts.append("")
 
@@ -249,23 +208,14 @@ class LayoutEngine:
         font_size,
         padding,
     ):
-        """
-        Calculate the minimum width required for each text.
-        """
-
-        widths = []
-
-        for text in texts:
-            widths.append(
-                pdfmetrics.stringWidth(
-                    str(text),
-                    font_name,
-                    font_size,
-                )
-                + (padding * 2)
-            )
-
-        return widths
+        return [
+            pdfmetrics.stringWidth(
+                str(text),
+                font_name,
+                font_size,
+            ) + (padding * 2)
+            for text in texts
+        ]
 
     @staticmethod
     def minimum_text_width(
@@ -279,11 +229,10 @@ class LayoutEngine:
                 str(text),
                 font_name,
                 font_size,
-            )
-            + (padding * 2)
+            ) + (padding * 2)
             for text in texts
         )
 
     @staticmethod
     def font_name():
-        return ARABIC_FONT if is_rtl() else ENGLISH_FONT
+        return ARABIC_FONT

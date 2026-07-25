@@ -2,7 +2,6 @@ import arabic_reshaper
 from bidi.algorithm import get_display
 from reportlab.pdfbase import pdfmetrics
 
-from i18n import is_rtl
 
 import re
 

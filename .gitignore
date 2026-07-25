@@ -1,18 +1,23 @@
-# Python cache
 __pycache__/
-*.py[cod]
+*.pyc
+*.pyo
+*.pyd
 
-# Generated reports
-output/
-
-# Virtual environments
-venv/
 .venv/
+venv/
+env/
 
-# IDE files
-.vscode/
 .idea/
+.vscode/
 
-# OS files
-.DS_Store
+build/
+dist/
+
+*.pdf
+
+*.xlsx
+
+*.log
+
 Thumbs.db
+.DS_Store

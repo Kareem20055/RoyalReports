@@ -1,5 +1,4 @@
 from core.pdf.components import divider
-from i18n import t
 
 from design.layout import (
     HEADER_TOP,
@@ -67,7 +66,7 @@ def draw(
 
     draw_text(
         canvas=canvas,
-        text=t(report.title),
+        text=report.title,
         x=center_x,
         y=current_y,
         align="center",

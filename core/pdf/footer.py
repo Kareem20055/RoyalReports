@@ -8,9 +8,6 @@ from design.layout import (
 from design.fonts import SMALL_SIZE
 from design.text import draw_text
 
-from i18n import t
-from core.pdf.layout_engine import LayoutEngine
-
 
 def draw(
     canvas,
@@ -28,21 +25,22 @@ def draw(
         width=width,
     )
 
-    # النص الموجود على بداية الصفحة (يمين في العربي - شمال في الإنجليزي)
+    # النص أسفل يمين الصفحة
     draw_text(
         canvas=canvas,
-        text=t("generated_by"),
-        x=LayoutEngine.page_start(width, PAGE_MARGIN),
+        text="تم إنشاء التقرير بواسطة RoyalReports",
+        x=width - PAGE_MARGIN,
         y=current_y,
+        align="right",
         size=SMALL_SIZE,
     )
 
-    # رقم الصفحة في نهاية الصفحة (شمال في العربي - يمين في الإنجليزي)
+    # رقم الصفحة أسفل يسار الصفحة
     draw_text(
         canvas=canvas,
         text=str(canvas.getPageNumber()),
-        x=LayoutEngine.page_end(width, PAGE_MARGIN),
+        x=PAGE_MARGIN,
         y=current_y,
-        align=LayoutEngine.text_align(),
+        align="left",
         size=SMALL_SIZE,
     )

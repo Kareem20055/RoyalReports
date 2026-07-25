@@ -1,10 +1,124 @@
 from design.colors import BLACK
+from design.layout import PAGE_MARGIN
 
-from .normalize_table import normalize_table
-from .layout import build_columns
-from .header import draw_header
-from .body import draw_rows
+from core.pdf.layout_engine import LayoutEngine
 
+from .cell import draw_cell
+from .measure import (
+    measure_header,
+    measure_rows,
+)
+
+
+def build_columns(
+    headers,
+    rows,
+    page_width,
+    margin,
+    weights,
+    max_column_widths,
+):
+    return LayoutEngine.data_table_layout(
+        headers=headers,
+        rows=rows,
+        page_width=page_width,
+        margin=margin,
+        weights=weights,
+        max_column_widths=max_column_widths,
+    )
+
+
+def draw_row(
+    canvas,
+    columns,
+    values,
+    y,
+    height,
+    margin=PAGE_MARGIN,
+    header=False,
+    background=None,
+    text_color=BLACK,
+):
+    if len(columns) != len(values):
+        raise ValueError(
+            "columns and values must have the same length."
+        )
+
+    table_width = sum(width for _, width in columns)
+
+    x = margin + table_width
+
+    for value, (_, column_width) in zip(values, columns):
+
+        x -= column_width
+
+        draw_cell(
+            canvas=canvas,
+            text=value,
+            x=x,
+            y=y,
+            width=column_width,
+            height=height,
+            background=background,
+            text_color=text_color,
+            bold=header,
+        )
+
+def draw_header(
+    canvas,
+    headers,
+    columns,
+    y,
+    background,
+    text_color,
+    margin,
+):
+    header = measure_header(
+        headers=headers,
+        columns=columns,
+    )
+
+    draw_row(
+        canvas=canvas,
+        columns=columns,
+        values=header["headers"],
+        y=y,
+        height=header["height"],
+        header=True,
+        background=background,
+        text_color=text_color,
+        margin=margin,
+    )
+
+    return y - header["height"]
+
+
+def draw_rows(
+    canvas,
+    rows,
+    columns,
+    y,
+    margin,
+):
+    measured_rows = measure_rows(
+        rows=rows,
+        columns=columns,
+    )
+
+    for row in measured_rows:
+
+        draw_row(
+            canvas=canvas,
+            columns=columns,
+            values=row["values"],
+            y=y,
+            height=row["height"],
+            margin=margin,
+        )
+
+        y -= row["height"]
+
+    return y
 
 def draw_data_table(
     canvas,
@@ -19,21 +133,8 @@ def draw_data_table(
     max_column_widths=None,
     header_background=None,
     header_text_color=BLACK,
-    normalize=True,
     show_header=True,
 ):
-    """
-    Draw a complete data table.
-    """
-
-    if normalize:
-        headers, rows, weights, max_column_widths = normalize_table(
-            headers=headers,
-            rows=rows,
-            weights=weights,
-            max_column_widths=max_column_widths,
-        )
-
     layout = build_columns(
         headers=headers,
         rows=rows,
@@ -42,6 +143,7 @@ def draw_data_table(
         weights=weights,
         max_column_widths=max_column_widths,
     )
+
     columns = layout.columns
     margin = layout.margin
 
