@@ -31,20 +31,20 @@ class ReportGenerator:
         self,
         output_path,
     ):
-        """
-        Generate the report PDF.
-
-        Parameters
-        ----------
-        output_path : str
-            Destination PDF path.
-        """
 
         pdf = canvas.Canvas(
             output_path,
             pagesize=(PAGE_WIDTH, PAGE_HEIGHT),
         )
 
+        self.render(pdf)
+
+        pdf.save()
+
+    def render(
+        self,
+        pdf,
+    ):
         current_y = header.draw(
             canvas=pdf,
             report=self.report,
@@ -59,7 +59,6 @@ class ReportGenerator:
             current_y=current_y,
             width=PAGE_WIDTH,
         )
-
 
         current_y = attendance_table.draw(
             canvas=pdf,
@@ -79,5 +78,3 @@ class ReportGenerator:
             canvas=pdf,
             width=PAGE_WIDTH,
         )
-
-        pdf.save()

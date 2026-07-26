@@ -1,9 +1,16 @@
+import os
+import sys
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-import os
 
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-FONT_DIR = os.path.join(BASE_DIR, "assets", "fonts")
+
+def resource_path(relative_path):
+    if hasattr(sys, "_MEIPASS"):
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.dirname(os.path.dirname(__file__)), relative_path)
+
+
+FONT_DIR = resource_path(os.path.join("assets", "fonts"))
 
 
 def register_fonts():

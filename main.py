@@ -10,6 +10,7 @@ from design.fonts import register_fonts
 from core.report.weekly_summary_builder import WeeklySummaryBuilder
 from core.pdf.weekly_summary_generator import WeeklySummaryGenerator
 from core.report.date_range import build_folder_name
+from core.pdf.combined_generator import CombinedGenerator
 
 
 ctk.set_appearance_mode("light")
@@ -85,6 +86,11 @@ def generate():
         output_dir.mkdir(exist_ok=True)
 
         pdf_count = 0
+        employee_reports = []
+
+        # ==========================
+        # Generate Employee Reports
+        # ==========================
 
         for employee in report.employees:
 
@@ -95,36 +101,50 @@ def generate():
                 date_range=report.date_range,
             )
 
+            employee_reports.append(pdf_report)
+
             pdf_path = output_dir / f"{employee.name}.pdf"
 
-            generator = ReportGenerator(
+            ReportGenerator(
                 pdf_report,
                 settings,
-            )
-
-            generator.generate(
+            ).generate(
                 str(pdf_path),
             )
 
             pdf_count += 1
 
-            weekly_report = weekly_builder.build(
-                employees=report.employees,
-                company=report.company,
-                title="التقرير الأسبوعي",
-                date_range=report.date_range,
-            )
+        # ==========================
+        # Weekly Summary
+        # ==========================
 
-            weekly_pdf_path = output_dir / "التقرير الأسبوعي.pdf"
+        weekly_report = weekly_builder.build(
+            employees=report.employees,
+            company=report.company,
+            title="التقرير الأسبوعي",
+            date_range=report.date_range,
+        )
 
-            weekly_generator = WeeklySummaryGenerator(
-                weekly_report,
-                settings,
-            )
+        weekly_pdf_path = output_dir / "التقرير الأسبوعي.pdf"
 
-            weekly_generator.generate(
-                str(weekly_pdf_path),
-            )
+        WeeklySummaryGenerator(
+            weekly_report,
+            settings,
+        ).generate(
+            str(weekly_pdf_path),
+        )
+
+        # ==========================
+        # Combined Report
+        # ==========================
+
+        CombinedGenerator(
+            summary_report=weekly_report,
+            employee_reports=employee_reports,
+            settings=settings,
+        ).generate(
+            str(output_dir / "التقرير الكامل.pdf")
+        )
 
         messagebox.showinfo(
             "Finished",
@@ -139,9 +159,8 @@ PDFs Saved To :
         )
 
     except Exception:
-        
-        traceback.print_exc()
 
+        traceback.print_exc()
         raise
 
 

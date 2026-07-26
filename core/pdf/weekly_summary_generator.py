@@ -32,6 +32,15 @@ class WeeklySummaryGenerator:
             pagesize=(PAGE_WIDTH, PAGE_HEIGHT),
         )
 
+        self.render(pdf)
+
+        pdf.save()
+
+    def render(
+        self,
+        pdf,
+    ):
+
         current_y = header.draw(
             canvas=pdf,
             report=self.report,
@@ -51,5 +60,3 @@ class WeeklySummaryGenerator:
             canvas=pdf,
             width=PAGE_WIDTH,
         )
-
-        pdf.save()
